@@ -4,19 +4,16 @@ AR                   = ar
 LD                   = gcc
 CFLAGS              += -fPIC -fno-stack-protector -fno-builtin -fno-jump-tables -fno-common -Wno-attributes -g
 ARFLAGS              = -rcs
-#INCLUDE              = -I /opt/intel/sgxsdk/include/tlibc/ -I ../                                             \
-#                       $(patsubst %,-I%,$(subst :, ,$(SGX_INCLUDE)))
-INCLUDE              = -I /opt/intel/sgxsdk/include/
-#OBJECTS              = server_local.o set_sched.o cache.o
-OBJECTS              = attack_demo.o set_sched.o cache.o aes_core.o
+SGX_SDK				?= /opt/intel/sgxsdk
+INCLUDE              = -I $(SGX_SDK)/include/
+OBJECTS              = attack_demo.o set_sched.o cache.o Enclave/aes_core.o
 SUBDIRS              = Enclave
 LIB_SGX_URTS         = -lsgx_urts
 LIB_UAE_SERVICE      = -lsgx_uae_service
 
 LIBS                 = -lvictim_enclave_proxy $(LIB_SGX_URTS) $(LIB_UAE_SERVICE) -lpthread -lrt 
-LIB_DIRS 	     = -L /opt/intel/sgxsdk/lib64 -L ./Enclave
-#LIB_DIRS             = $(SUBDIRS:%=-L %)                                            \
-#			$(patsubst %,-L%,$(subst :, ,$(SGX_LIBS)))
+LIB_DIRS 	         = -L $(SGX_SDK)/lib64 -L ./Enclave
+
 BUILDDIRS            = $(SUBDIRS:%=build-%)
 CLEANDIRS            = $(SUBDIRS:%=clean-%)
 SCRUBDIRS            = $(SUBDIRS:%=scrub-%)
@@ -62,8 +59,9 @@ clean: $(CLEANDIRS)
 	rm -f $(OUTPUT)
 	
 $(BUILDDIRS): force_check
-	echo "$(INDENT)[===] $(@:build-%=%) [===]"
+	echo "$(INDENT)[===] ENTER $(@:build-%=%) [===]"
 	$(MAKE) -C $(@:build-%=%) INDENT+="$(INDENT_STEP)" curr-dir=$(curr-dir)/$(@:build-%=%)
+	echo "$(INDENT)[===] EXIT $(@:build-%=%) [===]"
 
 $(CLEANDIRS): force_check
 	echo "$(INDENT)[===] $(@:clean-%=%) [===]"

